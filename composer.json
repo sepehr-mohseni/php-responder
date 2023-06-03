@@ -1,0 +1,21 @@
+{
+    "name": "sepmsi/php-responder",
+    "autoload": {
+        "psr-4": {
+            "SepMsi\\Framework\\": "framework/",
+            "App\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Sepehr Mohseni",
+            "homepage": "https://github.com/sepmsi"
+        }
+    ],
+    "require-dev": {
+        "symfony/var-dumper": "^6.3"
+    },
+    "require": {
+        "nikic/fast-route": "^1.3"
+    }
+}
