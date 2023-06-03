@@ -7,6 +7,13 @@ use SepMsi\Framework\Http\Response;
 
 class HomeController
 {
+    private Request $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
     public function index(): Response
     {
         $content = "<h1>Hello World</h1>";
@@ -15,7 +22,7 @@ class HomeController
 
     public function show(int $id): Response
     {
-        $content = "<h1>this is article {$id}</h1>";
+        $content = "<h1>This is article {$id}</h1>";
         return new Response($content);
     }
 
@@ -23,6 +30,9 @@ class HomeController
     {
         $title = $args['body']['title'] ?? '';
         $content = $args['body']['content'] ?? '';
-        return new Response($title);
+
+        // Perform validation or other processing on the input data
+
+        return new Response("Received title: $title");
     }
 }
