@@ -2,8 +2,8 @@
 
 namespace SepMsi\Framework\Http;
 
-use FastRoute\RouteCollector;
 use FastRoute\Dispatcher;
+use FastRoute\RouteCollector;
 use function FastRoute\simpleDispatcher;
 
 class Kernel
@@ -27,12 +27,21 @@ class Kernel
         } elseif ($status === Dispatcher::METHOD_NOT_ALLOWED) {
             return $this->handleMethodNotAllowed($routeInfo[1]);
         }
+
         [$status, [$controller, $method], $vars] = $routeInfo;
 
         if ($httpMethod === 'POST') {
             $vars['body'] = $request->getPostData();
         }
-        return (new $controller())->$method($vars);
+
+        $controllerInstance = new $controller($request);
+        $response = $controllerInstance->$method($vars);
+
+        if (!$response instanceof Response) {
+            $response = $this->createResponse($response);
+        }
+
+        return $response;
     }
 
     protected function handleNotFound(): Response
@@ -44,5 +53,15 @@ class Kernel
     {
         $allowedMethodsString = implode(', ', $allowedMethods);
         return new Response('405 Method Not Allowed. Allowed methods: ' . $allowedMethodsString, 405);
+    }
+
+    protected function createResponse($content, int $status = 200, array $headers = []): Response
+    {
+        if (is_array($content) || is_object($content)) {
+            $content = json_encode($content);
+            $headers['Content-Type'] = 'application/json';
+        }
+
+        return new Response($content, $status, $headers);
     }
 }
